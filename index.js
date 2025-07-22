@@ -1,59 +1,20 @@
-let isModalOpen = false;
-let contrastToggle = false;
-const scaleFactor = 1 / 20;
+const suits = ["spades", "hearts", "diamonds", "clubs"];
+const values =  ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
-function moveBackground(event) {
-  const shapes = document.querySelectorAll(".shape");
-  const x = event.clientX * scaleFactor;
-  const y = event.clientY * scaleFactor;
-
-  for (let i = 0; i < shapes.length; ++i) {
-    const isOdd = i % 2 !== 0;
-    const boolInt = isOdd ? -1 : 1;
-    // Added rotate after tutorial
-    shapes[i].style.transform = `translate(${x * boolInt}px, ${y * boolInt}px) rotate(${x * boolInt * 10}deg)`
+function createDeck() {
+  const deck = [];
+  for (const suit of suits) {
+    for (const value of values) {
+      deck.push({ suit: suit, value: value});
+    }
   }
+  return deck;
 }
 
-function toggleContrast() {
-  contrastToggle = !contrastToggle;
-  if (contrastToggle) {
-    document.body.classList += " dark-theme"
+function shuffleDeck(deck) {
+  for (let i = deck.length - 1; i > 0; --i) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
   }
-  else {
-    document.body.classList.remove("dark-theme")
-  }
-}
-
-function contact(event) {
-  event.preventDefault();
-  const loading = document.querySelector(".modal__overlay--loading");
-  const success = document.querySelector(".modal__overlay--success");
-  loading.classList += " modal__overlay--visible";
-  emailjs
-    .sendForm(
-      "service_80ih0if",
-      "template_d9refyl",
-      event.target,
-      "user_K1PoFs8pB2YVWStDxrUls"
-    )
-    .then(() => {
-      loading.classList.remove("modal__overlay--visible");
-      success.classList += " modal__overlay--visible";
-    })
-    .catch(() => {
-      loading.classList.remove("modal__overlay--visible");
-      alert(
-        "The email service is temporarily unavailable. Please contact me directly on email@email.com"
-      );
-    });
-}
-
-function toggleModal() {
-  if (isModalOpen) {
-    isModalOpen = false;
-    return document.body.classList.remove("modal--open");
-  }
-  isModalOpen = true;
-  document.body.classList += " modal--open";
+  return deck;
 }
