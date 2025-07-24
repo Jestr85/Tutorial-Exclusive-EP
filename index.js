@@ -1,20 +1,9 @@
-const suits = ["spades", "hearts", "diamonds", "clubs"];
-const values =  ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-
-function createDeck() {
-  const deck = [];
-  for (const suit of suits) {
-    for (const value of values) {
-      deck.push({ suit: suit, value: value});
-    }
-  }
-  return deck;
+async function createDeck() {
+    const response = await fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
+    const data = await response.json()
+    return data.deck_id
 }
 
-function shuffleDeck(deck) {
-  for (let i = deck.length - 1; i > 0; --i) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
-  return deck;
+function searchCards(cards, rank, suit) {
+    return cards.filter(card => card.value === rank && card.suit === suit)
 }
